@@ -1,0 +1,35 @@
+{
+  "slug": "chmod-calculator",
+  "name": "Chmod Calculator Pro",
+  "tagline": "Visual chmod permission calculator and generator",
+  "description": "Interactive calculator for Unix/Linux file permissions. Convert between numeric (755) and symbolic (rwxr-xr-x) notation, understand permission bits visually, and generate chmod commands.",
+  "price": "$9",
+  "category": "Developer Tools",
+  "tech_stack": ["Vercel", "Vanilla JS"],
+  "features": [
+    "Numeric to symbolic notation converter",
+    "Symbolic to numeric notation converter",
+    "Visual permission bit toggles",
+    "Chmod command generator",
+    "Special permissions calculator (SUID, SGID, Sticky)",
+    "Umask calculator",
+    "Permission comparison tool",
+    "Common permission presets"
+  ],
+  "use_cases": [
+    "Setting correct file permissions",
+    "Learning Unix permission system",
+    "Server administration",
+    "Security hardening"
+  ],
+  "target_audience": "Linux system administrators, web developers, DevOps engineers, security professionals",
+  "seo_keywords": ["chmod calculator", "unix permissions", "linux file permissions", "chmod 755", "permission calculator"],
+  "demo": {
+    "numeric_example": "755",
+    "symbolic_example": "rwxr-xr-x",
+    "command": "chmod 755 script.sh"
+  },
+  "status": "spec_ready",
+  "created_cycle": 1072,
+  "priority": "high"
+}

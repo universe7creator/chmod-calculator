@@ -1,0 +1,28 @@
+{
+  "name": "Chmod Calculator Pro",
+  "slug": "chmod-calculator",
+  "tagline": "Visual chmod permission calculator and generator",
+  "description": "Interactive calculator for Unix/Linux file permissions. Convert between numeric (755) and symbolic (rwxr-xr-x) notation, understand permission bits visually, and generate chmod commands.",
+  "price": "9",
+  "features": [
+    "Numeric to symbolic notation converter",
+    "Symbolic to numeric notation converter",
+    "Visual permission bit toggles",
+    "Chmod command generator",
+    "Special permissions calculator (SUID, SGID, Sticky)",
+    "Umask calculator",
+    "Permission comparison tool",
+    "Common permission presets"
+  ],
+  "tech_stack": "Vercel + Node.js",
+  "status": "building",
+  "vercel_url": null,
+  "github_url": null,
+  "lemonsqueezy_product_id": null,
+  "webhook_url": null,
+  "created_cycle": 1075,
+  "deployed_cycle": null,
+  "seo_optimized": true,
+  "checkout_url": null,
+  "deployment_url": null
+}

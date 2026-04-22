@@ -1,0 +1,8 @@
+{
+  "name": "chmod-calculator",
+  "version": "1.0.0",
+  "description": "Visual chmod permission calculator and generator",
+  "scripts": {
+    "dev": "vercel dev"
+  }
+}

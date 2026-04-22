@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chmod Calculator Pro - Visual Permission Calculator</title>
+  <meta name="description" content="Interactive calculator for Unix/Linux file permissions. Convert between numeric and symbolic notation, understand permission bits visually.">
+  <meta property="og:title" content="Chmod Calculator Pro">
+  <meta property="og:description" content="Visual chmod permission calculator and generator">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .gradient-text {
+      background: linear-gradient(135deg, #22d3ee 0%, #818cf8 50%, #c084fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .glass {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .permission-bit {
+      transition: all 0.2s ease;
+    }
+    .permission-bit.active {
+      background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
+      box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+    }
+    .check-toggle:checked + div {
+      background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
+      border-color: #22d3ee;
+    }
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 20px rgba(34, 211, 238, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(34, 211, 238, 0.4); }
+    }
+    .glow-effect {
+      animation: pulse-glow 3s ease-in-out infinite;
+    }
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-[#0a0a0f] text-white min-h-screen">
+  <!-- Navbar -->
+  <nav class="fixed top-0 left-0 right-0 z-50 glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+            <span class="mono font-bold text-sm">CH</span>
+          </div>
+          <span class="font-semibold text-lg">Chmod Calculator Pro</span>
+        </div>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="#features" class="text-gray-400 hover:text-white transition-colors">Features</a>
+          <a href="#calculator" class="text-gray-400 hover:text-white transition-colors">Calculator</a>
+          <a href="#faq" class="text-gray-400 hover:text-white transition-colors">FAQ</a>
+        </div>
+        <button class="px-5 py-2 rounded-lg bg-gradient-to-r from-cyan-500 to-violet-500 font-medium hover:opacity-90 transition-opacity">
+          Get Pro $9
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-sm text-cyan-400 mb-6">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+        Trusted by 10,000+ developers
+      </div>
+      <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+        Master <span class="gradient-text">File Permissions</span><br>with Visual Precision
+      </h1>
+      <p class="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+        Interactive calculator for Unix/Linux file permissions. Convert between numeric (755) and symbolic (rwxr-xr-x) notation instantly.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#calculator" class="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 font-semibold text-lg hover:opacity-90 transition-opacity glow-effect">
+          Try Calculator Free
+        </a>
+        <button class="px-8 py-4 rounded-xl glass font-semibold text-lg hover:bg-white/10 transition-colors">
+          Watch Demo
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Calculator Demo -->
+  <section id="calculator" class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Interactive Permission Calculator</h2>
+        <p class="text-gray-400">Click the permission bits to see real-time conversion</p>
+      </div>
+
+      <div class="glass rounded-2xl p-6 md:p-8 fade-in">
+        <!-- Numeric Display -->
+        <div class="text-center mb-8">
+          <div class="text-sm text-gray-500 mb-2">Numeric Notation</div>
+          <div id="numeric-display" class="mono text-6xl md:text-7xl font-bold gradient-text">644</div>
+        </div>
+
+        <!-- Symbolic Display -->
+        <div class="text-center mb-10">
+          <div class="text-sm text-gray-500 mb-2">Symbolic Notation</div>
+          <div id="symbolic-display" class="mono text-4xl md:text-5xl font-bold text-white">rw-r--r--</div>
+        </div>
+
+        <!-- Permission Matrix -->
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <!-- Owner -->
+          <div class="glass rounded-xl p-6">
+            <div class="text-cyan-400 font-semibold mb-4 text-center">Owner (User)</div>
+            <div class="space-y-3">
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="owner" data-bit="4" checked>
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit active">r</div>
+                <span class="text-gray-400">Read (4)</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="owner" data-bit="2" checked>
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit active">w</div>
+                <span class="text-gray-400">Write (2)</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="owner" data-bit="1">
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit">x</div>
+                <span class="text-gray-400">Execute (1)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Group -->
+          <div class="glass rounded-xl p-6">
+            <div class="text-violet-400 font-semibold mb-4 text-center">Group</div>
+            <div class="space-y-3">
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="group" data-bit="4" checked>
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit active">r</div>
+                <span class="text-gray-400">Read (4)</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="group" data-bit="2">
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit">w</div>
+                <span class="text-gray-400">Write (2)</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="group" data-bit="1">
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit">x</div>
+                <span class="text-gray-400">Execute (1)</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Others -->
+          <div class="glass rounded-xl p-6">
+            <div class="text-purple-400 font-semibold mb-4 text-center">Others</div>
+            <div class="space-y-3">
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="other" data-bit="4" checked>
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit active">r</div>
+                <span class="text-gray-400">Read (4)</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="other" data-bit="2">
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit">w</div>
+                <span class="text-gray-400">Write (2)</span>
+              </label>
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" class="check-toggle hidden" data-class="other" data-bit="1">
+                <div class="w-14 h-14 rounded-xl border-2 border-gray-700 flex items-center justify-center text-xl font-bold transition-all permission-bit">x</div>
+                <span class="text-gray-400">Execute (1)</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Command Output -->
+        <div class="glass rounded-xl p-6">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-sm text-gray-500">Generated Command</span>
+            <button onclick="copyCommand()" class="text-cyan-400 hover:text-cyan-300 text-sm font-medium">Copy</button>
+          </div>
+          <div class="mono text-xl md:text-2xl text-green-400">chmod <span id="command-output">644</span> file.txt</div>
+        </div>
+
+        <!-- Special Permissions -->
+        <div class="mt-6 flex flex-wrap gap-4 justify-center">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="special-perm w-5 h-5 rounded border-gray-600" data-bit="4000">
+            <span class="text-gray-400">Setuid (4)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="special-perm w-5 h-5 rounded border-gray-600" data-bit="2000">
+            <span class="text-gray-400">Setgid (2)</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="special-perm w-5 h-5 rounded border-gray-600" data-bit="1000">
+            <span class="text-gray-400">Sticky (1)</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Quick Presets -->
+      <div class="mt-8 flex flex-wrap gap-3 justify-center">
+        <button onclick="setPermissions(777)" class="px-4 py-2 rounded-lg glass text-sm hover:bg-white/10 transition-colors">777 (Full)</button>
+        <button onclick="setPermissions(755)" class="px-4 py-2 rounded-lg glass text-sm hover:bg-white/10 transition-colors">755 (Executable)</button>
+        <button onclick="setPermissions(644)" class="px-4 py-2 rounded-lg glass text-sm hover:bg-white/10 transition-colors">644 (Default)</button>
+        <button onclick="setPermissions(600)" class="px-4 py-2 rounded-lg glass text-sm hover:bg-white/10 transition-colors">600 (Private)</button>
+        <button onclick="setPermissions(700)" class="px-4 py-2 rounded-lg glass text-sm hover:bg-white/10 transition-colors">700 (Secure)</button>
+        <button onclick="setPermissions(444)" class="px-4 py-2 rounded-lg glass text-sm hover:bg-white/10 transition-colors">444 (Read-only)</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section id="features" class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Everything You Need</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="glass rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Bidirectional Conversion</h3>
+          <p class="text-gray-400">Convert numeric to symbolic and back instantly with visual feedback.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Special Permissions</h3>
+          <p class="text-gray-400">Calculate SUID, SGID, and Sticky bit permissions for advanced use cases.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Permission Presets</h3>
+          <p class="text-gray-400">Quick access to common permission patterns like 755, 644, 600.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Command Generator</h3>
+          <p class="text-gray-400">Copy-paste ready chmod commands generated automatically.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Umask Calculator</h3>
+          <p class="text-gray-400">Calculate default file permissions based on umask values.</p>
+        </div>
+        <div class="glass rounded-2xl p-6">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center mb-4">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path></svg>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Mobile Friendly</h3>
+          <p class="text-gray-400">Works perfectly on desktop, tablet, and mobile devices.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <div class="glass rounded-3xl p-10 md:p-16">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Master Permissions?</h2>
+        <p class="text-xl text-gray-400 mb-8">Get the Pro version and unlock advanced features.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div class="text-5xl font-bold gradient-text">$9</div>
+          <div class="text-left">
+            <div class="text-sm text-gray-500">One-time payment</div>
+            <div class="text-sm text-gray-500">Lifetime access</div>
+          </div>
+        </div>
+        <button class="mt-8 px-10 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-500 font-semibold text-lg hover:opacity-90 transition-opacity">
+          Get Chmod Calculator Pro
+        </button>
+        <p class="mt-4 text-sm text-gray-500">30-day money-back guarantee</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
+      <div class="space-y-4">
+        <div class="glass rounded-xl p-6">
+          <h3 class="font-semibold mb-2">What is chmod?</h3>
+          <p class="text-gray-400">Chmod is a Unix/Linux command used to change the permissions of files and directories. It controls who can read, write, or execute a file.</p>
+        </div>
+        <div class="glass rounded-xl p-6">
+          <h3 class="font-semibold mb-2">What does 755 mean?</h3>
+          <p class="text-gray-400">755 means the owner has read, write, and execute permissions (7 = 4+2+1), while group and others have read and execute permissions (5 = 4+1).</p>
+        </div>
+        <div class="glass rounded-xl p-6">
+          <h3 class="font-semibold mb-2">What are special permissions?</h3>
+          <p class="text-gray-400">Special permissions include Setuid (4), Setgid (2), and Sticky bit (1). They provide additional security and functionality for executable files and directories.</p>
+        </div>
+        <div class="glass rounded-xl p-6">
+          <h3 class="font-semibold mb-2">Is this tool free?</h3>
+          <p class="text-gray-400">The basic calculator is free to use. Pro version includes advanced features like umask calculator, permission comparison, and batch operations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 px-4 border-t border-gray-800">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+          <span class="mono font-bold text-sm">CH</span>
+        </div>
+        <span class="font-semibold">Chmod Calculator Pro</span>
+      </div>
+      <div class="text-sm text-gray-500">© 2024 All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script>
+    // Permission Calculator Logic
+    const classes = ['owner', 'group', 'other'];
+    let specialBits = 0;
+
+    function updateDisplay() {
+      let numeric = specialBits;
+      let symbolic = '';
+
+      classes.forEach(cls => {
+        let value = 0;
+        let sym = '';
+        document.querySelectorAll(`[data-class="${cls}"]`).forEach(cb => {
+          if (cb.checked) {
+            value += parseInt(cb.dataset.bit);
+            sym += cb.dataset.bit === '4' ? 'r' : cb.dataset.bit === '2' ? 'w' : 'x';
+          } else {
+            sym += '-';
+          }
+        });
+        numeric = numeric * 10 + value;
+        symbolic += sym;
+      });
+
+      // Pad numeric to 3 or 4 digits
+      const numericStr = numeric.toString().padStart(specialBits > 0 ? 4 : 3, '0');
+
+      document.getElementById('numeric-display').textContent = numericStr;
+      document.getElementById('symbolic-display').textContent = symbolic;
+      document.getElementById('command-output').textContent = numericStr;
+    }
+
+    function setPermissions(mode) {
+      const modeStr = mode.toString().padStart(3, '0');
+      classes.forEach((cls, idx) => {
+        const val = parseInt(modeStr[idx]);
+        document.querySelectorAll(`[data-class="${cls}"]`).forEach(cb => {
+          const bit = parseInt(cb.dataset.bit);
+          cb.checked = (val & bit) !== 0;
+          cb.nextElementSibling.classList.toggle('active', cb.checked);
+        });
+      });
+      updateDisplay();
+    }
+
+    function copyCommand() {
+      const cmd = `chmod ${document.getElementById('command-output').textContent} file.txt`;
+      navigator.clipboard.writeText(cmd);
+    }
+
+    // Event listeners
+    document.querySelectorAll('.check-toggle').forEach(cb => {
+      cb.addEventListener('change', function() {
+        this.nextElementSibling.classList.toggle('active', this.checked);
+        updateDisplay();
+      });
+    });
+
+    document.querySelectorAll('.special-perm').forEach(cb => {
+      cb.addEventListener('change', function() {
+        if (this.checked) {
+          specialBits += parseInt(this.dataset.bit);
+        } else {
+          specialBits -= parseInt(this.dataset.bit);
+        }
+        updateDisplay();
+      });
+    });
+
+    // Initialize
+    updateDisplay();
+  </script>
+</body>
+</html>
