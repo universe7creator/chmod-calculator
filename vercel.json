@@ -1,4 +1,5 @@
 {
+  "name": "chmod-calculator",
   "version": 2,
   "public": true,
   "routes": [
