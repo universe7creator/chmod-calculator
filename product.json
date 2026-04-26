@@ -3,7 +3,7 @@
   "slug": "chmod-calculator",
   "tagline": "Visual permission calculator for Linux/macOS",
   "description": "Calculate and visualize Linux file permissions with octal, symbolic, and checkbox interfaces. Generate chmod commands instantly.",
-  "price": "19",
+  "price": "$9",
   "features": [
     "Octal to symbolic conversion",
     "Visual permission grid",
@@ -14,7 +14,7 @@
   ],
   "tech_stack": "Vercel + Vanilla JS",
   "status": "live",
-  "category": "developer_tools",
+  "category": "developer-tools",
   "spec_version": "1.0",
   "checkout_url": "https://buy.polar.sh/polar_cl_auBtY242MFt2lsX7fOlpJp5uc1ofQU3HLeXD71jO2VC",
   "vercel_url": "https://chmod-calculator-5atogp6t7-madnessqws-projects.vercel.app",
@@ -22,9 +22,11 @@
   "github_url": "https://github.com/universe7creator/chmod-calculator",
   "webhook_url": "https://chmod-calculator.vercel.app/api/webhook",
   "payment_provider": "polar",
-  "polar_product_id": "8455765d-3fef-494f-99f7-63e51048ded7",
-  "polar_product_price_id": "794d1c4d-9084-4f53-b2e3-3fe21f4bbf94",
+  "polar_product_id": "75f9973e-c45c-40f5-95f2-76353d987e11",
+  "polar_product_price_id": "0543b9b0-00b4-4135-b41f-468c1f1c6972",
   "polar_checkout_link_id": "246d2a5d-bd95-422f-8f33-8a20f97350b2",
   "created_cycle": 1116,
-  "deployed_cycle": 1108
+  "deployed_cycle": 1108,
+  "canonical_url": "https://chmod-calculator-5atogp6t7-madnessqws-projects.vercel.app",
+  "canonical_url_override": "https://chmod-calculator-5atogp6t7-madnessqws-projects.vercel.app"
 }
